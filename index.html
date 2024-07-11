@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module">
+        //TODO: change API_KEY
+        const API_KEY = 'your key';
+        const btn = document.querySelector('#send');
+        const responseBox = document.querySelector('#response');
+        const promptBox = document.querySelector('#prompt');
+
+        let res;
+        btn.onclick = async (e) => {
+            console.log('Pressed');
+            console.log(promptBox.value);
+            const text = `{ "model": "microsoft/Phi-3-mini-128k-instruct", "messages": [{ "role": "user", "content": "${promptBox.value}" }] }`
+            const res = axios.post('https://shale.live/v1/chat/completions', text,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                
+            responseBox.textContent = 'Loading...';
+
+            res.then((response) => {
+                responseBox.textContent = response.data?.choices[0].message.content;
+            })
+
+            promptBox.value = '';
+        }
+
+    </script>
+    <title>Web ui</title>
+</head>
+
+<body>
+    <h2 id="response">Nothing here yet.</h2>
+
+    <input type="text" name="prompt" id="prompt" placeholder="prompt">
+    <button id="send">Send</button>
+</body>
+
+</html>
